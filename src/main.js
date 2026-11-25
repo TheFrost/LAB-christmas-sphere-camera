@@ -27,11 +27,11 @@ async function main() {
   const canvas = $('gpu');
   const renderer = await Renderer.create(canvas);
 
-  loaderText.textContent = 'Cargando núcleo Rust/WASM…';
+  loaderText.textContent = 'Loading Rust/WASM core…';
   renderer.onError = showError;
   const wasm = await init();
 
-  loaderText.textContent = 'Rust: generando geometría y horneando grabados de nieve (2048×1024)…';
+  loaderText.textContent = 'Rust: generating geometry and baking snow engravings (2048×1024)…';
   await nextPaint();
   let t0 = performance.now();
   const sphere = build_sphere(256, 160, 1.0);
@@ -63,18 +63,18 @@ async function main() {
   const syncCamUi = () => {
     const status = $('camera-status');
     const starting = feed.state === 'starting';
-    camBtn.textContent = feed.active ? 'Detener cámara' : starting ? 'Cancelar' : 'Activar cámara';
+    camBtn.textContent = feed.active ? 'Stop camera' : starting ? 'Cancel' : 'Enable camera';
     camBtn.classList.toggle('on', feed.active);
     camBtn.setAttribute('aria-pressed', String(feed.active));
     status.dataset.state = feed.state;
     if (feed.active) {
-      status.textContent = 'Cámara en vivo';
+      status.textContent = 'Live camera';
       $('s-cam').textContent = `${feed.width}×${feed.height}${feed.fps ? ` · ${Math.round(feed.fps)} Hz` : ''}`;
     } else {
-      $('s-cam').textContent = 'Estudio virtual';
-      status.textContent = starting ? 'Esperando permiso…' : feed.state === 'error'
-        ? ({ NotAllowedError: 'Permiso denegado. Activa la cámara para reintentar.', NotFoundError: 'No se encontró una cámara.', NotReadableError: 'Cámara ocupada o no disponible.' }[feed.error?.name] || feed.error?.message || 'Cámara no disponible')
-        : 'Estudio virtual · cámara apagada';
+      $('s-cam').textContent = 'Virtual studio';
+      status.textContent = starting ? 'Waiting for permission…' : feed.state === 'error'
+        ? ({ NotAllowedError: 'Permission denied. Enable the camera to try again.', NotFoundError: 'No camera was found.', NotReadableError: 'Camera is busy or unavailable.' }[feed.error?.name] || feed.error?.message || 'Camera unavailable')
+        : 'Virtual studio · camera off';
     }
     status.title = status.textContent;
     probe?.free();
@@ -132,7 +132,7 @@ async function main() {
 
   const toggleUi = () => {
     const hidden = document.body.classList.toggle('ui-hidden');
-    $('ui-toggle').textContent = hidden ? 'Mostrar interfaz' : 'Ocultar interfaz';
+    $('ui-toggle').textContent = hidden ? 'Show interface' : 'Hide interface';
     $('ui-toggle').setAttribute('aria-pressed', String(hidden));
     document.querySelectorAll('.panel').forEach((panel) => { panel.inert = hidden; });
   };
@@ -243,7 +243,7 @@ function showError(err) {
   console.error(err);
   loader.classList.remove('done');
   loader.classList.add('error');
-  loaderText.textContent = `${err.message}\n\nRecarga con un navegador compatible con WebGPU.`;
+  loaderText.textContent = `${err.message}\n\nReload in a WebGPU-compatible browser.`;
 }
 
 main().catch(showError);

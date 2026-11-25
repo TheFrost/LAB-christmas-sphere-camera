@@ -1,82 +1,82 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#090a0e" />
-    <title>Esfera Navideña · Espejo en tiempo real — Frost Lab</title>
+    <title>Christmas Ornament · Real-time Mirror — Frost Lab</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='58' r='36' fill='%23c0121f'/><rect x='42' y='12' width='16' height='12' rx='2' fill='%23d4a94a'/></svg>" />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <canvas id="gpu" aria-label="Esfera navideña interactiva en tres dimensiones"></canvas>
+    <canvas id="gpu" aria-label="Interactive 3D Christmas ornament"></canvas>
 
     <header class="panel title">
       <p class="eyebrow"><span class="lab-mark" aria-hidden="true">✳</span> Frost Lab <span class="edition">/ 001</span></p>
-      <h1>Esfera Navideña<span>Espejo en tiempo real</span></h1>
-      <p class="lede">Un espejo convexo de metal rojo con grabados esmerilados. Tu entorno, reflejado en tiempo real sobre su superficie.</p>
+      <h1>Christmas Ornament<span>Real-time mirror</span></h1>
+      <p class="lede">A convex red metal mirror with frosted engravings. Your surroundings, reflected on its surface in real time.</p>
       <div class="tech"><span>WEBGPU</span><span>RUST / WASM</span><span>PBR</span></div>
     </header>
 
-    <aside class="panel stats" aria-label="Métricas del experimento">
-      <h2><span class="status-dot"></span> Telemetría</h2>
+    <aside class="panel stats" aria-label="Experiment metrics">
+      <h2><span class="status-dot"></span> Telemetry</h2>
       <div class="fps-display"><b id="s-fps">—</b><span>FPS</span></div>
       <div><span>Frame CPU</span><b id="s-cpu">—</b></div>
-      <div><span>Cámara</span><b id="s-cam">—</b></div>
-      <div><span>Rust · sonda SH</span><b id="s-rust">—</b></div>
-      <div><span>Rust · grabados</span><b id="s-bake">—</b></div>
+      <div><span>Camera</span><b id="s-cam">—</b></div>
+      <div><span>Rust · SH probe</span><b id="s-rust">—</b></div>
+      <div><span>Rust · engravings</span><b id="s-bake">—</b></div>
       <div><span>GPU</span><b id="s-gpu">—</b></div>
     </aside>
 
     <section class="panel controls-help">
-      <h2>Controles de la escena</h2>
+      <h2>Scene controls</h2>
       <ul>
-        <li><kbd>Arrastrar</kbd> Rotar en cualquier dirección</li>
-        <li><kbd>Rueda</kbd> / <kbd>Pellizco</kbd> Zoom</li>
-        <li><kbd>R</kbd> Restablecer vista</li>
-        <li><kbd>Espacio</kbd> Auto-rotación</li>
-        <li><kbd>C</kbd> Cámara</li>
-        <li><kbd>H</kbd> Ocultar interfaz</li>
+        <li><kbd>Drag</kbd> Rotate in any direction</li>
+        <li><kbd>Wheel</kbd> / <kbd>Pinch</kbd> Zoom</li>
+        <li><kbd>R</kbd> Reset view</li>
+        <li><kbd>Space</kbd> Auto-rotate</li>
+        <li><kbd>C</kbd> Camera</li>
+        <li><kbd>H</kbd> Hide interface</li>
       </ul>
     </section>
 
-    <section class="panel tweaks" aria-label="Ajustes de escena">
+    <section class="panel tweaks" aria-label="Scene settings">
       <div class="camera-block">
-        <p id="camera-status" role="status">Estudio virtual · cámara apagada</p>
-        <button id="cam-btn" type="button" aria-pressed="false">Activar cámara</button>
-        <p class="privacy-note">Tu imagen se procesa localmente. No se guarda ni se envía.</p>
+        <p id="camera-status" role="status">Virtual studio · camera off</p>
+        <button id="cam-btn" type="button" aria-pressed="false">Enable camera</button>
+        <p class="privacy-note">Your image is processed locally. It is never saved or sent.</p>
       </div>
       <details id="material-panel" open>
-        <summary>Material y reflejo</summary>
+        <summary>Material &amp; reflection</summary>
         <div class="sliders">
-          <label>Exposición <output data-for="exposure"></output>
+          <label>Exposure <output data-for="exposure"></output>
             <input type="range" id="exposure" min="0.3" max="3" step="0.01" value="1.15" /></label>
-          <label>Apertura del reflejo <output data-for="fov"></output>
+          <label>Reflection aperture <output data-for="fov"></output>
             <input type="range" id="fov" min="40" max="150" step="1" value="104" /></label>
-          <label>Ganancia de cámara <output data-for="gain"></output>
+          <label>Camera gain <output data-for="gain"></output>
             <input type="range" id="gain" min="0.3" max="3" step="0.01" value="1.25" /></label>
-          <label>Profundidad del grabado <output data-for="engrave"></output>
+          <label>Engraving depth <output data-for="engrave"></output>
             <input type="range" id="engrave" min="0" max="2" step="0.01" value="1" /></label>
-          <label>Escarcha de nieve <output data-for="frost"></output>
+          <label>Snow frost <output data-for="frost"></output>
             <input type="range" id="frost" min="0" max="1" step="0.01" value="1" /></label>
-          <label>Barniz de vidrio <output data-for="clearcoat"></output>
+          <label>Glass clearcoat <output data-for="clearcoat"></output>
             <input type="range" id="clearcoat" min="0" max="1" step="0.01" value="0.6" /></label>
-          <label>Roughness base <output data-for="roughness"></output>
+          <label>Base roughness <output data-for="roughness"></output>
             <input type="range" id="roughness" min="0" max="0.6" step="0.01" value="0" /></label>
         </div>
       </details>
       <div class="row">
-        <label class="check"><input type="checkbox" id="auto" checked /> Auto-rotación</label>
-        <button id="reset-view" class="secondary" type="button">Restablecer</button>
+        <label class="check"><input type="checkbox" id="auto" checked /> Auto-rotate</label>
+        <button id="reset-view" class="secondary" type="button">Reset</button>
       </div>
     </section>
 
-    <footer class="credit"><span>Experimento 001</span><b>Frost Lab</b></footer>
-    <button id="ui-toggle" type="button" class="secondary" aria-pressed="false">Ocultar interfaz</button>
+    <footer class="credit"><span>Experiment 001</span><b>Frost Lab</b></footer>
+    <button id="ui-toggle" type="button" class="secondary" aria-pressed="false">Hide interface</button>
 
     <div id="loader" class="overlay" role="status">
       <div class="ornament-spinner"></div>
-      <p id="loader-text">Inicializando WebGPU…</p>
+      <p id="loader-text">Initializing WebGPU…</p>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>

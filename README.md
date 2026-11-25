@@ -1,52 +1,52 @@
-# Frost Lab / 001 — Esfera navideña
+# Frost Lab / 001 — Christmas Ornament
 
-Experimento de renderizado con **Vite, JavaScript vanilla, WebGPU nativo (WGSL) y Rust compilado a WebAssembly**. Una esfera de metal rojo pulido refleja la cámara del dispositivo y un entorno de estudio con iluminación HDR, copos grabados y un casquillo metálico dorado.
+A rendering experiment built with **Vite, vanilla JavaScript, native WebGPU (WGSL) and Rust compiled to WebAssembly**. A polished red metal sphere reflects the device camera and an HDR-lit studio environment, with engraved snowflakes and a gold metal cap.
 
-## Iniciar
+## Getting started
 
 ```sh
 npm install
 npm run dev
 ```
 
-Abre la dirección `localhost` que imprime Vite en un navegador compatible con WebGPU. Selecciona **Activar cámara** y concede permiso. Sin cámara, la escena utiliza un estudio virtual. Toda la captura y el procesamiento ocurre localmente; no se graba ni se transmite el video.
+Open the `localhost` address Vite prints in a WebGPU-compatible browser. Select **Enable camera** and grant permission. Without a camera, the scene uses a virtual studio. All capture and processing happens locally; the video is never recorded or transmitted.
 
-Para acceder desde otro dispositivo, utiliza HTTPS: la cámara y WebGPU necesitan un contexto seguro (localhost es válido).
+To access it from another device, use HTTPS: the camera and WebGPU require a secure context (localhost counts as one).
 
-## Controles
+## Controls
 
-- Arrastrar con mouse o dedo: rotación por cuaterniones, libre en tres ejes.
-- Rueda o pellizco: zoom.
-- Doble clic o `R`: restablecer la vista.
-- Barra espaciadora: auto-rotación.
-- `C`: iniciar/detener cámara.
-- `H`: ocultar/mostrar controles. Hay también un botón para recuperarlos.
+- Drag with mouse or finger: quaternion rotation, free on all three axes.
+- Wheel or pinch: zoom.
+- Double-click or `R`: reset the view.
+- Spacebar: auto-rotate.
+- `C`: start/stop the camera.
+- `H`: hide/show the controls. There is also a button to bring them back.
 
 ## Pipeline
 
-1. `CameraFeed` detecta frames nuevos mediante `requestVideoFrameCallback`, con alternativa basada en `currentTime`.
-2. `copyExternalImageToTexture` copia cada frame disponible a una textura sRGB sin leer el frame completo en CPU.
-3. El shader `env.wgsl` proyecta la cámara en un render target equirectangular HDR `rgba16float`, de 1536 × 768, con una proyección equidistante configurable. La zona no capturada se completa con el estudio virtual; una sola webcam no puede reconstruir todo un entorno de 360°.
-4. La GPU genera los mipmaps del entorno solo al recibir un frame nuevo o cambiar los parámetros de proyección. El material base es metallic 1 / roughness 0, con Fresnel, normal map esmerilado, barniz opcional y antialiasing 4× MSAA. La reflexión usa `reflect(-V, N)`, con filtrado según su huella angular para evitar aliasing en el borde.
-5. Rust genera la malla esférica, el casquillo con anillo y la textura de grabados de 2048 × 1024. Una sonda de armónicos esféricos L2 estima la luz difusa a partir de una miniatura de la cámara de 64 píxeles de ancho; utiliza pesos precalculados y actualiza hasta 15 veces por segundo. Esto no limita la frecuencia de las reflexiones especulares.
+1. `CameraFeed` detects new frames with `requestVideoFrameCallback`, falling back to `currentTime`.
+2. `copyExternalImageToTexture` copies each available frame into an sRGB texture without reading the whole frame on the CPU.
+3. The `env.wgsl` shader projects the camera into a 1536 × 768 `rgba16float` HDR equirectangular render target, using a configurable equidistant projection. The area the camera doesn't cover is filled with the virtual studio; a single webcam can't reconstruct a full 360° environment.
+4. The GPU generates the environment mipmaps only when a new frame arrives or the projection parameters change. The base material is metallic 1 / roughness 0, with Fresnel, a frosted normal map, optional clearcoat and 4× MSAA antialiasing. The reflection uses `reflect(-V, N)`, filtered by its angular footprint to avoid aliasing at the edge.
+5. Rust generates the sphere mesh, the cap with its loop and the 2048 × 1024 engraving texture. An L2 spherical-harmonics probe estimates diffuse lighting from a 64-pixel-wide camera thumbnail; it uses precomputed weights and updates up to 15 times per second. This does not limit the update rate of specular reflections.
 
-El panel muestra los FPS de renderizado, el tiempo CPU, los frames de cámara efectivamente subidos por segundo, el tiempo de la sonda Rust y la información del adaptador GPU. El objetivo es 60 FPS, pero depende del navegador, GPU, pantalla y frecuencia real de la cámara.
+The panel shows render FPS, CPU time, camera frames actually uploaded per second, Rust probe time and GPU adapter info. The target is 60 FPS, but it depends on the browser, GPU, display and the camera's real frame rate.
 
-## Compilación y pruebas
+## Build and tests
 
-El WebAssembly precompilado se incluye en `src/wasm`, así que no necesitas instalar Rust para ejecutar o compilar el frontend.
+The precompiled WebAssembly is included in `src/wasm`, so you don't need Rust to run or build the frontend.
 
 ```sh
-npm test         # Pruebas JS y de las funciones WASM reales
-npm run build    # Distribución estática en dist/
-npm run preview  # Servir el build de producción
+npm test         # JS tests and tests of the real WASM functions
+npm run build    # Static build in dist/
+npm run preview  # Serve the production build
 ```
 
-Si modificas `rust/src/lib.rs`, instala Rust, el target `wasm32-unknown-unknown` y `wasm-pack`, y ejecuta:
+If you modify `rust/src/lib.rs`, install Rust, the `wasm32-unknown-unknown` target and `wasm-pack`, then run:
 
 ```sh
 npm run wasm
 npm run build:full
 ```
 
-**Autor:** Frost Lab. Implementación inicial con Claude y continuación con Codex.
+**Author:** Frost Lab. Initial implementation with Claude, continued with Codex.

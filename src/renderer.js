@@ -19,9 +19,9 @@ const VERTEX_STRIDE = 11 * 4;
 
 export class Renderer {
   static async create(canvas) {
-    if (!navigator.gpu) throw new Error('Este navegador no soporta WebGPU.');
+    if (!navigator.gpu) throw new Error('This browser does not support WebGPU.');
     const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
-    if (!adapter) throw new Error('No se encontró un adaptador WebGPU.');
+    if (!adapter) throw new Error('No WebGPU adapter was found.');
     const device = await adapter.requestDevice();
     device.pushErrorScope('validation');
     const renderer = new Renderer(canvas, adapter, device);
@@ -43,7 +43,7 @@ export class Renderer {
     device.lost.then((info) => {
       if (info.reason !== 'destroyed') {
         this.lost = true;
-        this.onError(new Error(`Se perdió el dispositivo WebGPU: ${info.message}`));
+        this.onError(new Error(`The WebGPU device was lost: ${info.message}`));
       }
     });
     device.addEventListener('uncapturederror', (event) => {

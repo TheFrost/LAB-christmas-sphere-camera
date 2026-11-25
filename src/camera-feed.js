@@ -37,7 +37,7 @@ export class CameraFeed {
     let stream;
     try {
       if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error('La cámara requiere HTTPS o localhost y un navegador compatible.');
+        throw new Error('The camera requires HTTPS or localhost and a compatible browser.');
       }
       stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
@@ -55,7 +55,7 @@ export class CameraFeed {
       });
       await this.video.play();
       if (generation !== this.generation) return;
-      if (!this.video.videoWidth || !this.video.videoHeight) throw new Error('La cámara no entregó un frame válido.');
+      if (!this.video.videoWidth || !this.video.videoHeight) throw new Error('The camera did not deliver a valid frame.');
       this.frames = 0;
       this.fps = track?.getSettings?.().frameRate || 0;
       this.lastVideoTime = -1;
