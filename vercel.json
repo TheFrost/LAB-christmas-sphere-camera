@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/sphere-christmas/",
+      "destination": "/"
+    },
+    {
       "source": "/sphere-christmas",
       "destination": "/"
     },
