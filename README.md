@@ -42,6 +42,8 @@ npm run build    # Static build in dist/
 npm run preview  # Serve the production build
 ```
 
+Development serves `/`; production and `npm run preview` use `/sphere-christmas/`. The Vercel rewrites also preserve access from the standalone deployment. Public URL: https://lab.thefrost.xyz/sphere-christmas/.
+
 If you modify `rust/src/lib.rs`, install Rust, the `wasm32-unknown-unknown` target and `wasm-pack`, then run:
 
 ```sh

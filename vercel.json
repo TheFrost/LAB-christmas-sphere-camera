@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/sphere-christmas",
+      "destination": "/"
+    },
+    {
+      "source": "/sphere-christmas/:path*",
+      "destination": "/:path*"
+    }
+  ]
+}
